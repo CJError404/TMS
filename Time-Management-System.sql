@@ -1,26 +1,26 @@
--- Create Database
-Create database Time_management_system;
+-- create database
+CREATE DATABASE time_management_system;
 
--- Create tables
-Create table tasks (
-Task_Id int auto_increment primary key,
-Task_Title varchar(255) not null,
-Task_Description text,
-Task_Due_Date varchar(255),
-Task_Priority int,
-Task_Completed boolean default 0
+-- create tables
+CREATE TABLE tasks (
+id INT AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(255) NOT NULL,
+description TEXT,
+due_date VARCHAR(255),
+priority INT,
+completion_date BOOLEAN DEFAULT 0
 );
 
-Create table Users(
-User_Id int auto_increment primary key,
-User_Username varchar(255) not null,
-User_Password varchar(255) not null
+CREATE TABLE users (
+id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL
 );
 
-Create table Events(
-Event_Id int auto_increment primary key,
-Event_Title varchar(100) not null,
-Event_Description text,
-Event_Date date,
-Event_Time time
+CREATE TABLE events (
+id INT AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(255) NOT NULL,
+description TEXT,
+event_date DATE,
+event_time TIME
 );
