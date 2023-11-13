@@ -2,11 +2,27 @@
 require_once 'config/connection.php';
 
 $connection = mysqli_connect(DB_HOST, DB_USER, PASSWORD, DB_NAME);
-$event_id = $_GET['event_id'];
-$query = "SELECT * FROM events_ WHERE event_id ='$event_id'";
-$sql = mysqli_query($connection, $query);
 
 $errors = array();
+
+if (!$connection) {
+    $errors[] = mysqli_connect_error();
+}
+
+$event_id = $_GET['event_id'];
+$query = "SELECT * FROM events_ WHERE event_id = ?";
+$stmt = mysqli_prepare($connection, $query);
+
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $event_id);
+    if (mysqli_stmt_execute($stmt)) {
+        $sql = mysqli_stmt_get_result($stmt);
+    } else {
+        $errors[] = mysqli_error($connection);
+    }
+} else {
+    $errors[] = mysqli_error($connection);
+}
 
 if (isset($_POST['updateForm'])) {
     $event_id = $_POST['event_id'];
@@ -15,26 +31,31 @@ if (isset($_POST['updateForm'])) {
     $date_time = $_POST['date_time'];
 
     if (count($errors) == 0) {
-        $updateLogs = "UPDATE event_logs SET end_time = $date_time";
-        if (!mysqli_query($connection, $updateLogs));{
+        $updateLogs = "UPDATE event_logs SET end_time = ? WHERE event_id = ?";
+        $stmtLogs = mysqli_prepare($connection, $updateLogs);
+        if ($stmtLogs) {
+            mysqli_stmt_bind_param($stmtLogs, "si", $date_time, $event_id);
+            if (!mysqli_stmt_execute($stmtLogs)) {
+                $errors[] = mysqli_error($connection);
+            }
+        } else {
             $errors[] = mysqli_error($connection);
         }
 
-        $updateQuery = "UPDATE events_ SET title = '$title', event_description = '$event_description', date_time = '$date_time',  WHERE event_id = '$event_id'";
-        $stmt = mysqli_query($connection, $updateQuery);
-
+        $updateQuery = "UPDATE events_ SET title = ?, event_description = ?, date_time = ? WHERE event_id = ?";
+        $stmt = mysqli_prepare($connection, $updateQuery);
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sssi", $title, $event_description, $event_datetime, $event_id);
-            if (!mysqli_stmt_execute($stmt)){
+            mysqli_stmt_bind_param($stmt, "sssi", $title, $event_description, $date_time, $event_id);
+            if (!mysqli_stmt_execute($stmt)) {
                 $errors[] = mysqli_error($connection);
             }
+        } else {
+            $errors[] = mysqli_error($connection);
         }
-        else {
-            $errors[] = mysqli_stmt_error($stmt);
-        }
-        if (count($errors) == 0){
-        header('location: createEvent.php');
-        exit();
+
+        if (count($errors) == 0) {
+            header('location: createEvent.php');
+            exit();
         }
     }
 }
@@ -48,9 +69,15 @@ if (isset($_POST['updateForm'])) {
     <title>Edit Event</title>
 </head>
 <body>
+<?php if (count($errors) > 0): ?>
+    <div class="errors">
+        <?php foreach ($errors as $error): ?>
+            <p><?php echo $error; ?></p>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
 <form action="editEvent.php?event_id=<?php echo $event_id; ?>" method="POST">
     <?php while($row = mysqli_fetch_array($sql)): ?>
-        <!-- Keep task_id as a hidden input field -->
         <input type="hidden" name="event_id" value="<?php echo $row['event_id']; ?>">
         <input type="text" name="title" value="<?php echo $row['title']; ?>"> <br><br>
         <input type="text" name="event_description" value="<?php echo $row['event_description']; ?>"><br><br>
