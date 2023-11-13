@@ -10,7 +10,7 @@ $query = "SELECT * FROM tasks WHERE task_id ='$task_id'";
 $sql = mysqli_query($connection, $query);
 
 if (!$sql) {
-    $errors[] = mysqli_error($connection); // Capture and store errors
+    $errors[] = mysqli_error($connection);
 }
 
 if (isset($_POST['updateForm'])) {
@@ -22,36 +22,28 @@ if (isset($_POST['updateForm'])) {
     $completed = isset($_POST['completed']) ? 1 : 0;
 
     if (count($errors) == 0) {
+        if ($completed) {
+            $updateLogs = "UPDATE tasks_logs SET end_time = NOW() WHERE task_id = '$task_id'";
+            if (!mysqli_query($connection, $updateLogs)) {
+                $errors[] = mysqli_error($connection);
+            }
+        }
+        
         $updateQuery = "UPDATE tasks SET title = ?, task_description = ?, due_date = ?, priority = ?, completed = ? WHERE task_id = ?";
         $stmt = mysqli_prepare($connection, $updateQuery);
-    
+        
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "ssssii", $title, $task_description, $due_date, $priority, $completed, $task_id);
-            if (mysqli_stmt_execute($stmt)) {
-                // If the update query succeeds, proceed with the end tracking query
-                if ($completed == 1) {
-                    $endTrackingQuery = "UPDATE task_logs SET end_time = NOW() WHERE task_id = ?";
-                    $stmtEnd = mysqli_prepare($connection, $endTrackingQuery);
-                    
-                    if ($stmtEnd) {
-                        mysqli_stmt_bind_param($stmtEnd, "i", $task_id);
-                        if (!mysqli_stmt_execute($stmtEnd)) {
-                            $errors[] = mysqli_error($connection); // Capture end tracking query errors
-                        }
-                    } else {
-                        $errors[] = mysqli_stmt_error($stmtEnd); // Capture errors during end tracking query preparation
-                    }
-                }
-    
-                if (count($errors) == 0) {
-                    header('location: create.php');
-                    exit();
-                }
-            } else {
-                $errors[] = mysqli_error($connection); // Capture update query errors
+            if (!mysqli_stmt_execute($stmt)) {
+                $errors[] = mysqli_error($connection);
             }
         } else {
-            $errors[] = mysqli_stmt_error($stmt); // Capture errors during query preparation
+            $errors[] = mysqli_stmt_error($stmt);
+        }
+
+        if (count($errors) == 0) {
+            header('location: create.php');
+            exit();
         }
     }
 }
@@ -65,21 +57,23 @@ if (isset($_POST['updateForm'])) {
     <title>Edit Task</title>
 </head>
 <body>
-<form action="edit.php?task_id=<?php echo $task_id; ?>" method="POST">
-    <?php while($row = mysqli_fetch_array($sql)): ?>
-        <!-- Keep task_id as a hidden input field -->
-        <input type="hidden" name="task_id" value="<?php echo $row['task_id']; ?>">
-        <input type="text" name="title" value="<?php echo $row['title']; ?>"> <br><br>
-        <input type="text" name="task_description" value="<?php echo $row['task_description']; ?>"><br><br>
-        <input type="text" name="due_date" value="<?php echo $row['due_date']; ?>"><br><br>
-        <input type="text" name="priority" value="<?php echo $row['priority']; ?>"> <br><br>
-        <label for="completed">Status:</label>
+        <form action="edit.php?task_id=<?php echo $task_id; ?>" method="POST">
+
+            <?php while($row = mysqli_fetch_array($sql)): ?>
+                <input type="hidden" name="task_id" value="<?php echo $row['task_id']; ?>">
+                <input type="text" name="title" value="<?php echo $row['title']; ?>"> <br><br>
+                <input type="text" name="task_description" value="<?php echo $row['task_description']; ?>"><br><br>
+                <input type="text" name="due_date" value="<?php echo $row['due_date']; ?>"><br><br>
+                <input type="text" name="priority" value="<?php echo $row['priority']; ?>"> <br><br>
+
+                <label for="completed">Status:</label>
                 <select name="completed">
                 <option value="0" <?php echo $row['completed'] == 0 ? 'selected' : ''; ?>>Not Completed</option>
                 <option value="1" <?php echo $row['completed'] == 1 ? 'selected' : ''; ?>>Completed</option>
                 </select><br><br>
-        <input type="submit" name="updateForm" value="Update"><br><br>
-    <?php endwhile; ?>
-</form>
+
+                <input type="submit" name="updateForm" value="Update"><br><br>
+        <?php endwhile; ?>
+    </form>
 </body>
 </html>
