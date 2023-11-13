@@ -5,7 +5,7 @@ CREATE DATABASE time_management_system;
 CREATE TABLE tasks (
 task_id INT AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR(255) NOT NULL,
-description TEXT,
+task_description TEXT,
 due_date DATE,
 priority INT,
 completed BOOLEAN DEFAULT 0
@@ -15,7 +15,7 @@ completed BOOLEAN DEFAULT 0
 CREATE TABLE events (
 event_id INT AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR(255) NOT NULL,
-description TEXT,
+event_description TEXT,
 date_time DATETIME
 );
 
