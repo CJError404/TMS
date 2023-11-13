@@ -6,7 +6,7 @@ CREATE TABLE tasks (
 task_id INT AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR(255) NOT NULL,
 task_description TEXT,
-due_date DATE,
+due_date DATETIME,
 priority INT,
 completed BOOLEAN DEFAULT 0
 );
