@@ -4,13 +4,10 @@
 
       $event_id = $_GET['event_id'];
 
-      $deleteLogs = "DELETE FROM event_logs WHERE event_id ='$event_id'";
       $deleteEvent = "DELETE FROM events_ WHERE event_id ='$event_id'";
-      
-      $resultLogs = mysqli_query($connection, $deleteLogs);
       $resultEvent = mysqli_query($connection, $deleteEvent);
 
-      if ($resultLogs && $resultEvent) 
+      if ($resultEvents) 
         {
            header('location: createEvent.php');
            exit();
