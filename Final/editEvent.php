@@ -11,18 +11,6 @@ if (!$connection) {
 
 $event_id = $_GET['event_id'];
 $query = "SELECT * FROM events_ WHERE event_id = ?";
-$stmt = mysqli_prepare($connection, $query);
-
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $event_id);
-    if (mysqli_stmt_execute($stmt)) {
-        $sql = mysqli_stmt_get_result($stmt);
-    } else {
-        $errors[] = mysqli_error($connection);
-    }
-} else {
-    $errors[] = mysqli_error($connection);
-}
 
 if (isset($_POST['updateForm'])) {
     $event_id = $_POST['event_id'];
@@ -31,22 +19,6 @@ if (isset($_POST['updateForm'])) {
     $date_time = $_POST['date_time'];
 
     if (count($errors) == 0) {
-        $updateLogs = "UPDATE event_logs SET end_time = ? WHERE event_id = ?";
-        $stmtLogs = mysqli_prepare($connection, $updateLogs);
-        if ($stmtLogs) {
-            $updateLogs = "UPDATE event_logs SET end_time = NOW() WHERE event_id = ?";
-            $stmtLogs = mysqli_prepare($connection, $updateLogs);
-
-        if ($stmtLogs) {
-            mysqli_stmt_bind_param($stmtLogs, "i", $event_id);
-            if (!mysqli_stmt_execute($stmtLogs)) {
-                $errors[] = mysqli_error($connection);
-                }
-        } 
-        else {
-            $errors[] = mysqli_error($connection);
-        }       
-
         $updateQuery = "UPDATE events_ SET title = ?, event_description = ?, date_time = ? WHERE event_id = ?";
         $stmt = mysqli_prepare($connection, $updateQuery);
         if ($stmt) {
@@ -63,7 +35,6 @@ if (isset($_POST['updateForm'])) {
             exit();
         }
     }
-}
 }
 ?>
 
