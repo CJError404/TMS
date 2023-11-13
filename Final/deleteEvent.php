@@ -7,7 +7,7 @@
       $deleteEvent = "DELETE FROM events_ WHERE event_id ='$event_id'";
       $resultEvent = mysqli_query($connection, $deleteEvent);
 
-      if ($resultEvents) 
+      if ($resultEvent) 
         {
            header('location: createEvent.php');
            exit();
