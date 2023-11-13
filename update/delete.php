@@ -10,7 +10,7 @@
       $resultTasks = mysqli_query($connection, $deleteTask);
       $resultLogs = mysqli_query($connection, $deleteLogs);
       
-      if ($resultTasks == TRUE && $resultLogs == TRUE) 
+      if ($resultTasks && $resultLogs) 
         {
            header('location: create.php');
            exit();
