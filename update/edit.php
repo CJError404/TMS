@@ -2,11 +2,16 @@
 require_once 'config/connection.php';
 
 $connection = mysqli_connect(DB_HOST, DB_USER, PASSWORD, DB_NAME);
+
+$errors = array();
+
 $task_id = $_GET['task_id'];
 $query = "SELECT * FROM tasks WHERE task_id ='$task_id'";
 $sql = mysqli_query($connection, $query);
 
-$errors = array();
+if (!$sql) {
+    $errors[] = mysqli_error($connection); // Capture and store errors
+}
 
 if (isset($_POST['updateForm'])) {
     $task_id = $_POST['task_id'];
@@ -15,8 +20,6 @@ if (isset($_POST['updateForm'])) {
     $due_date = $_POST['due_date'];
     $priority = $_POST['priority'];
     $completed = isset($_POST['completed']) ? 1 : 0;
-
-    // Validate inputs if necessary
 
     if (count($errors) == 0) {
         $updateQuery = "UPDATE tasks SET title = ?, task_description = ?, due_date = ?, priority = ?, completed = ? WHERE task_id = ?";
@@ -44,7 +47,7 @@ if (isset($_POST['updateForm'])) {
     }
 }
 ?>
-?>
+
 
 <!DOCTYPE html>
 <html>
