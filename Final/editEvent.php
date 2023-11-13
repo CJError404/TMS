@@ -3,7 +3,7 @@ require_once 'config/connection.php';
 
 $connection = mysqli_connect(DB_HOST, DB_USER, PASSWORD, DB_NAME);
 $event_id = $_GET['event_id'];
-$query = "SELECT * FROM events WHERE event_id ='$event_id'";
+$query = "SELECT * FROM events_ WHERE event_id ='$event_id'";
 $sql = mysqli_query($connection, $query);
 
 $errors = array();
@@ -12,19 +12,19 @@ if (isset($_POST['updateForm'])) {
     $event_id = $_POST['event_id'];
     $title = $_POST['title'];
     $event_description = $_POST['event_description'];
-    $event_datetime = $_POST['date_time'];
+    $date_time = $_POST['date_time'];
 
     if (count($errors) == 0) {
-        $updateLogs = "UPDATE event_logs SET end_time = $event_datetime";
-        if (!mysqli_query($connection, $updateLogs);){
+        $updateLogs = "UPDATE event_logs SET end_time = $date_time";
+        if (!mysqli_query($connection, $updateLogs));{
             $errors[] = mysqli_error($connection);
         }
 
-        $updateQuery = "UPDATE events SET title = '$title', event_description = '$event_description', date_time = '$event_datetime',  WHERE event_id = '$event_id'";
+        $updateQuery = "UPDATE events_ SET title = '$title', event_description = '$event_description', date_time = '$date_time',  WHERE event_id = '$event_id'";
         $stmt = mysqli_query($connection, $updateQuery);
 
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sss", $title, $event_description, $event_datetime);
+            mysqli_stmt_bind_param($stmt, "sssi", $title, $event_description, $event_datetime, $event_id);
             if (!mysqli_stmt_execute($stmt)){
                 $errors[] = mysqli_error($connection);
             }
@@ -48,7 +48,7 @@ if (isset($_POST['updateForm'])) {
     <title>Edit Event</title>
 </head>
 <body>
-<form action="editEvent.php?task_id=<?php echo $task_id; ?>" method="POST">
+<form action="editEvent.php?event_id=<?php echo $event_id; ?>" method="POST">
     <?php while($row = mysqli_fetch_array($sql)): ?>
         <!-- Keep task_id as a hidden input field -->
         <input type="hidden" name="event_id" value="<?php echo $row['event_id']; ?>">
