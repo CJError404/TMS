@@ -64,6 +64,7 @@ if (isset($_POST['updateForm'])) {
         }
     }
 }
+}
 ?>
 
 <!DOCTYPE html>
