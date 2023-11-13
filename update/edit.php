@@ -24,29 +24,36 @@ if (isset($_POST['updateForm'])) {
     if (count($errors) == 0) {
         $updateQuery = "UPDATE tasks SET title = ?, task_description = ?, due_date = ?, priority = ?, completed = ? WHERE task_id = ?";
         $stmt = mysqli_prepare($connection, $updateQuery);
-        mysqli_stmt_bind_param($stmt, "ssssii", $title, $task_description, $due_date, $priority, $completed, $task_id);
-        
-        if (!mysqli_stmt_execute($stmt)) {
-            $errors[] = mysqli_error($connection); // Capture update query errors
-        }
-
-        if ($completed == 1){
-            $endTrackingQuery = "UPDATE task_logs SET end_time = NOW() WHERE task_id = ?";
-            $stmtEnd = mysqli_prepare($connection, $endTrackingQuery);
-            mysqli_stmt_bind_param($stmtEnd, "i", $task_id);
-            
-            if (!mysqli_stmt_execute($stmtEnd)) {
-                $errors[] = mysqli_error($connection); // Capture end tracking query errors
+    
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "ssssii", $title, $task_description, $due_date, $priority, $completed, $task_id);
+            if (mysqli_stmt_execute($stmt)) {
+                // If the update query succeeds, proceed with the end tracking query
+                if ($completed == 1) {
+                    $endTrackingQuery = "UPDATE task_logs SET end_time = NOW() WHERE task_id = ?";
+                    $stmtEnd = mysqli_prepare($connection, $endTrackingQuery);
+                    
+                    if ($stmtEnd) {
+                        mysqli_stmt_bind_param($stmtEnd, "i", $task_id);
+                        if (!mysqli_stmt_execute($stmtEnd)) {
+                            $errors[] = mysqli_error($connection); // Capture end tracking query errors
+                        }
+                    } else {
+                        $errors[] = mysqli_stmt_error($stmtEnd); // Capture errors during end tracking query preparation
+                    }
+                }
+    
+                if (count($errors) == 0) {
+                    header('location: create.php');
+                    exit();
+                }
+            } else {
+                $errors[] = mysqli_error($connection); // Capture update query errors
             }
-        }
-
-        if (count($errors) == 0) {
-            header('location: create.php');
-            exit();
+        } else {
+            $errors[] = mysqli_stmt_error($stmt); // Capture errors during query preparation
         }
     }
-}
-?>
 
 
 <!DOCTYPE html>
