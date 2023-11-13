@@ -4,35 +4,41 @@ error_reporting(E_ERROR | E_PARSE);
 
 $connection = mysqli_connect(DB_HOST, DB_USER, PASSWORD, DB_NAME);
 
-$display_all = "SELECT * FROM events";
+$display_all = "SELECT * FROM events_";
 $query = mysqli_query($connection, $display_all);
 
 $errors = array();
 
-if (isset($_POST['submitForm'])){
-    $event_id = $_POST['event_id'];
+if (isset($_POST['submitFormBtn'])){
     $title = $_POST['title'];
     $event_description = $_POST['event_description'];
-    $event_datetime = $_POST['date_time'];
+    $event_datetime = $_POST['time_date']; // Updated to match the form input name
 
     if (count($errors) == 0){
-        $insertQuery = "INSERT INTO events (title, description, date_time) VALUES (?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO events_ (title, event_description, date_time) VALUES (?, ?, ?)";
         $stmt = $connection->prepare($insertQuery);
-        $stmt->bind_param->('sss', $title, $event_description, $event_datetime);
-        
+        $stmt->bind_param('sss', $title, $event_description, $event_datetime);
+
         if ($stmt->execute()){
-            $new_task_id = $stmt->insert_id;
-            $startTrackingQuery = "INSERT INTO event_logs (event_id, start_time, end_time) VALUES (?, NOW(), ?)";
+            $new_event_id = $stmt->insert_id;
+            
+            // Updated binding sequence for event_id and end_time
+            $startTrackingQuery = "INSERT INTO event_logs (event_id, end_time, start_time) VALUES (?, ?, NOW())";
             $stmtStart = $connection->prepare($startTrackingQuery);
-            $stmtStart->bind_param('is', $new_task_id, $event_datetime);
-            $stmtStart->execute();
-            header('location:createEvent.php');
-        }   else{
-            $errors['db_error'] = "Database Error!";
+            $stmtStart->bind_param('iss', $new_event_id, $event_datetime, $event_datetime); // Binding event_id, end_time, and start_time
+
+            if ($stmtStart->execute()) {
+                header('location:createEvent.php');
+            } else {
+                $errors['db_error'] = "Error inserting into event_logs: " . mysqli_error($connection);
+            }
+        } else {
+            $errors['db_error'] = "Error inserting into events_: " . mysqli_error($connection);
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,10 +55,10 @@ if (isset($_POST['submitForm'])){
     </div>
 <?php endif; ?>
 
-<form action="create.php" method="POST">
+<form action="createEvent.php" method="POST">
     <input type="text" name="title" placeholder="title"><br><br>
-    <input type="text" name="event_description" placeholder="description"><br><br>
-    <input type="text" name="time & date" placeholder="due date"><br><br>
+    <input type="text" name="event_description" placeholder="Event_description"><br><br>
+    <input type="text" name="time & date" placeholder="Date & Time"><br><br>
     <input type="submit" name="submitFormBtn" value="Submit"><br><br>
     <hr>
 </form>
@@ -74,8 +80,8 @@ if (isset($_POST['submitForm'])){
             <td><?php echo($row['title']); ?></td>
             <td><?php echo($row['description']); ?></td>
             <td><?php echo($row['date_time']); ?></td>
-            <td><a href ="deleteEvent.php?task_id=<?php echo $row['event_id']; ?>">Delete</td>
-            <td><a href="editEvent.php?task_id=<?php echo $row['event_id']; ?>">Edit</a></td>
+            <td><a href ="deleteEvent.php?event_id=<?php echo $row['event_id']; ?>">Delete</td>
+            <td><a href="editEvent.php?event_id=<?php echo $row['event_id']; ?>">Edit</a></td>
         </tr>
         </tbody>
     <?php endwhile; ?>
