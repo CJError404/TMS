@@ -34,13 +34,18 @@ if (isset($_POST['updateForm'])) {
         $updateLogs = "UPDATE event_logs SET end_time = ? WHERE event_id = ?";
         $stmtLogs = mysqli_prepare($connection, $updateLogs);
         if ($stmtLogs) {
-            mysqli_stmt_bind_param($stmtLogs, "si", $date_time, $event_id);
+            $updateLogs = "UPDATE event_logs SET end_time = NOW() WHERE event_id = ?";
+            $stmtLogs = mysqli_prepare($connection, $updateLogs);
+
+        if ($stmtLogs) {
+            mysqli_stmt_bind_param($stmtLogs, "i", $event_id);
             if (!mysqli_stmt_execute($stmtLogs)) {
                 $errors[] = mysqli_error($connection);
-            }
-        } else {
+                }
+        } 
+        else {
             $errors[] = mysqli_error($connection);
-        }
+        }       
 
         $updateQuery = "UPDATE events_ SET title = ?, event_description = ?, date_time = ? WHERE event_id = ?";
         $stmt = mysqli_prepare($connection, $updateQuery);
