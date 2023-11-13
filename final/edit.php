@@ -68,7 +68,7 @@ if (isset($_POST['updateForm'])) {
 
                 <label for="completed">Status:</label>
                 <select name="completed">
-                <option value="0" <?php echo $row['completed'] == 0 ? 'selected' : ''; ?>>Not Completed</option>
+                <option value="0" <?php echo $row['completed'] == 0 ? 'selected' : ''; ?>>In Progress</option>
                 <option value="1" <?php echo $row['completed'] == 1 ? 'selected' : ''; ?>>Completed</option>
                 </select><br><br>
 
