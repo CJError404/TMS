@@ -54,6 +54,7 @@ if (isset($_POST['updateForm'])) {
             $errors[] = mysqli_stmt_error($stmt); // Capture errors during query preparation
         }
     }
+}
 ?>
 
 <!DOCTYPE html>
