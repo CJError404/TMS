@@ -17,9 +17,6 @@ if (isset($_POST['submitFormBtn'])){
     $priority = (int)$_POST['priority'];
     $completed = (int)$_POST['completed']; 
 
-    // SET DEFAULT BOOLEAN 0 = NOT COMPLETED HEHE
-    $completed = "not completed";
-
     // validation if necessary
     if (count($errors) == 0){
         $insertQuery = "INSERT INTO tasks (title, task_description, due_date, priority, completed) VALUES (?, ?, ?, ?, ?)";
@@ -62,7 +59,7 @@ if (isset($_POST['submitFormBtn'])){
 <form action="create.php" method="POST">
     <input type="text" name="title" placeholder="title"><br><br>
     <input type="text" name="task_description" placeholder="description"><br><br>
-    <input type="text" name="due_date" placeholder="due date"><br><br>
+    <input type="datetime-local" name="due_date"><br><br>
     <input type="text" name="priority" placeholder="priority"><br><br>
     <input type="submit" name="submitFormBtn" value="Submit"><br><br>
     <hr>
@@ -74,7 +71,7 @@ if (isset($_POST['submitFormBtn'])){
         <th> ID </th>
         <th> Title </th>
         <th> Description </th>
-        <th> Due Date </th>
+        <th> Due Date and Time </th>
         <th> Priority </th>
 
     </tr>
@@ -87,7 +84,7 @@ if (isset($_POST['submitFormBtn'])){
             <td><?php echo($row['task_description']); ?></td>
             <td><?php echo($row['due_date']); ?></td>
             <td><?php echo($row['priority']); ?></td>
-            <td><?php echo $row['completed'] ? 'Completed' : 'Not Completed'; ?></td>
+            <td><?php echo $row['completed'] ? 'Completed' : 'In Progress'; ?></td>
             <td><a href ="delete.php?task_id=<?php echo $row['task_id']; ?>">Delete</td>
             <td><a href="edit.php?task_id=<?php echo $row['task_id']; ?>">Edit</a></td>
         </tr>
@@ -96,4 +93,3 @@ if (isset($_POST['submitFormBtn'])){
 </table>
 </body>
 </html>
-
