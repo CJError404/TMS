@@ -21,12 +21,6 @@ if (isset($_POST['submitFormBtn'])){
         $stmt ->bind_param('sss', $title, $event_description, $date_time);
         
         if ($stmt->execute()){
-            $new_task_id = $stmt->insert_id;
-            $startTrackingQuery = "INSERT INTO event_logs (event_id, start_time, end_time) VALUES (?, NOW(), ?)";
-
-            $stmtStart = $connection->prepare($startTrackingQuery);
-            $stmtStart->bind_param('is', $new_task_id, $date_time);
-            $stmtStart->execute();
             header('location:createEvent.php');
         }   else{
             $errors['db_error'] = "Database Error!";
