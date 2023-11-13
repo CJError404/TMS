@@ -22,7 +22,7 @@ if (isset($_POST['updateForm'])) {
         $updateQuery = "UPDATE tasks SET title = '$title', task_description = '$task_description', due_date = '$due_date', priority = '$priority', completed = '$completed' WHERE task_id = '$task_id'";
         mysqli_query($connection, $updateQuery);
         if ($completed == 1){
-            $endTrackingQuery = "UPDATE INTO tasks_logs(end_time) VALUES (NOW()) WHERE task_id = '$task_id'";
+            $endTrackingQuery = "UPDATE tasks_logs(end_time) VALUES (NOW()) WHERE task_id = '$task_id'";
             mysqli_query($connection, $endTrackingQuery);
         }
         header('location: create.php');
