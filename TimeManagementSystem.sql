@@ -25,3 +25,20 @@ user_id INT AUTO_INCREMENT PRIMARY KEY,
 username VARCHAR(255) NOT NULL,
 password VARCHAR(255) NOT NULL
 );
+
+-- create tables in order to track time spent on tasks and events
+CREATE TABLE tasks_logs (
+TL_id INT AUTO_INCREMENT PRIMARY KEY,
+task_id INT,
+start_time DATETIME,
+end_time DATETIME,
+FOREIGN KEY (task_id) references tasks(task_id)
+);
+
+CREATE TABLE event_logs (
+EL_id INT AUTO_INCREMENT PRIMARY KEY,
+event_id INT,
+start_time DATETIME,
+end_time DATETIME,
+FOREIGN KEY (event_id) references events(event_id)
+);
