@@ -69,7 +69,7 @@ if ($stmt) {
     <input type="hidden" name="event_id" value="<?php echo $row['event_id']; ?>">
     <input type="text" name="title" value="<?php echo $row['title']; ?>"> <br><br>
     <input type="text" name="event_description" value="<?php echo $row['event_description']; ?>"><br><br>
-    <input type="text" name="date_time" value="<?php echo $row['date_time']; ?>"><br><br>
+    <input type="datetime-local" name="date_time" value="<?php echo $row['date_time']; ?>"><br><br>
     <input type="submit" name="updateForm" value="Update"><br><br>
 </form>
 </body>
