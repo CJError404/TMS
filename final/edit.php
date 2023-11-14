@@ -63,7 +63,7 @@ if (isset($_POST['updateForm'])) {
                 <input type="hidden" name="task_id" value="<?php echo $row['task_id']; ?>">
                 <input type="text" name="title" value="<?php echo $row['title']; ?>"> <br><br>
                 <input type="text" name="task_description" value="<?php echo $row['task_description']; ?>"><br><br>
-                <input type="text" name="due_date" value="<?php echo $row['due_date']; ?>"><br><br>
+                <input type="datetime-local" name="due_date" value="<?php echo $row['due_date']; ?>"><br><br>
                 <input type="text" name="priority" value="<?php echo $row['priority']; ?>"> <br><br>
 
                 <label for="completed">Status:</label>
