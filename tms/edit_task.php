@@ -64,12 +64,12 @@ if (isset($_POST['updateForm'])) {
                 <input type="text" name="title" value="<?php echo $row['title']; ?>"> <br><br>
                 <input type="text" name="task_description" value="<?php echo $row['task_description']; ?>"><br><br>
                 <input type="text" name="due_date" value="<?php echo $row['due_date']; ?>"><br><br>
+                <label for="priority">Priority:</label>
                 <select name="priority">
                     <option value="1" <?php echo $row['priority'] == 1 ? 'selected' : ''; ?>>1</option>
                     <option value="2" <?php echo $row['priority'] == 2 ? 'selected' : ''; ?>>2</option>
                     <option value="3" <?php echo $row['priority'] == 3 ? 'selected' : ''; ?>>3</option>
                 </select><br><br>
-
                 <label for="completed">Status:</label>
                 <select name="completed">
                 <option value="0" <?php echo $row['completed'] == 0 ? 'selected' : ''; ?>>In Progress</option>
