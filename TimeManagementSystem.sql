@@ -16,7 +16,8 @@ CREATE TABLE events (
 event_id INT AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR(255) NOT NULL,
 event_description TEXT,
-date_time DATETIME
+start_date_time DATETIME,
+end_date_time DATETIME
 );
 
 -- create the users table to store information about system users (admin or regular users)
@@ -35,3 +36,10 @@ end_time DATETIME,
 FOREIGN KEY (task_id) references tasks(task_id)
 );
 
+CREATE TABLE event_logs (
+EL_id INT AUTO_INCREMENT PRIMARY KEY,
+event_id INT,
+start_time DATETIME,
+end_time DATETIME,
+FOREIGN KEY (event_id) references events(event_id)
+);
