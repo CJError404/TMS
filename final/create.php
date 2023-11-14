@@ -47,7 +47,7 @@ if (isset($_POST['submitFormBtn'])){
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>TMS</title>
 </head>
-<body>
+<body background = "">
 <?php if (count($errors) > 0): ?>
     <div class="errors">
         <?php foreach ($errors as $error): ?>
