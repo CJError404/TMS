@@ -133,7 +133,11 @@ if (isset($_POST['submitFormBtn'])){
         <input type="text" name="title" id="title" placeholder="Add task" required><br><br>
         <input type="text" name="task_description" id="task_description" placeholder="Type details for this new task" required><br><br>
         <input type="datetime-local" name="due_date" id="due_date" required><br><br>
-        <input type="text" name="priority" id="priority" placeholder="Priority" required><br><br>
+        <select name="priority" id="priority" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select><br><br>
         <input type="submit" name="submitFormBtn" value="Create Task">
     </form>
 
